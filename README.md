@@ -52,7 +52,7 @@ To get the navigator's current position at any time, initialize an object using 
 
 # Bugs or Requests  
 
-If you encounter any problems feel free to open an [issue](https://github.com/AnonymousAliensX/CachingDatabase/issues/new?template=bug_report.md). If you feel the library is missing a feature, please raise a [ticket](https://github.com/aagarwal1012/Animated-Text-Kit/issues/new?template=feature_request.md) on GitHub and I'll look into it. Pull request are also welcome.   
+If you encounter any problems feel free to open an [issue](https://github.com/AnonymousAliensX/category_navigator/issues/new?template=bug_report.md). If you feel the library is missing a feature, please raise a [ticket](https://github.com/AnonymousAliensX/category_navigator/issues/new?template=feature_request.md) on GitHub and I'll look into it. Pull request are also welcome.   
 
 
 # License  

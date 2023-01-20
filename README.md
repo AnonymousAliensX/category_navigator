@@ -1,7 +1,7 @@
 # Category Navigator
 A flutter ui package for cool navigation bar with a lot of customization options
 
-<img src="https://github.com/AnonymousAliensX/category_navigator/blob/main/demo.gif" alt="drawing" width="250" height="481"/>
+<img src="https://github.com/AnonymousAliensX/category_navigator/blob/main/demo.gif?raw=true" width="250" height="481"/>
 
 ## Features
 - navigation bar customization like color, elevation, shape, border radius, axis, etc
@@ -9,10 +9,10 @@ A flutter ui package for cool navigation bar with a lot of customization options
 - animate to default active item
 
 ## Getting started
-To start using this package, add `src` dependency to your `pubspec.yaml`
+To start using this package, add `category_navigator` dependency to your `pubspec.yaml`
 ```yaml
 dependencies:
-  src: '<latest_release>'
+  category_navigator: '<latest_release>'
 ```
 
 ## Usage

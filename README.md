@@ -21,8 +21,6 @@ A flutter ui package for cool navigation bar with a lot of customization options
 - unselected and highlighted item customization like background color, text color, shape, shadow, elevation, etc
 - animate to default active item
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
 ## Getting started
 To start using this package, add `src` dependency to your `pubspec.yaml`
 ```yaml
@@ -31,7 +29,6 @@ dependencies:
 ```
 
 ## Usage
-
 
 ```dart
 final List<String> itemsList = const ['All', 'Android', 'ML', 'Python', 'Flutter', 'Text', 'iOS', 'Web', 'Windows'];
@@ -52,3 +49,11 @@ return Scaffold(
 }
 ```
 To get the navigator's current position at any time, initialize an object using `NavigatorController()`, pass the controller object to `navigatorController` parameter of the constructor and then use `_navigatorController.activeItemIndex` to get the selected item's index
+
+# Bugs or Requests  
+
+If you encounter any problems feel free to open an [issue](https://github.com/AnonymousAliensX/CachingDatabase/issues/new?template=bug_report.md). If you feel the library is missing a feature, please raise a [ticket](https://github.com/aagarwal1012/Animated-Text-Kit/issues/new?template=feature_request.md) on GitHub and I'll look into it. Pull request are also welcome.   
+
+
+# License  
+category_navigator is licensed under `MIT license`. View [license](LICENSE).

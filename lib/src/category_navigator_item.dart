@@ -42,7 +42,7 @@ class _NavigatorItemState extends State<NavigatorItem> {
   @override
   void initState() {
     super.initState();
-    assert (widget.key is GlobalObjectKey);
+    assert(widget.key is GlobalObjectKey);
     widget.controller.addListener(toggleState);
     toggleState();
   }
@@ -82,11 +82,10 @@ class _NavigatorItemState extends State<NavigatorItem> {
             curve: Curves.decelerate,
             duration: const Duration(milliseconds: 200),
             decoration: BoxDecoration(
-              color: backgroundColor,
+                color: backgroundColor,
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.circular(10),
-                boxShadow: shadow
-            ),
+                boxShadow: shadow),
             child: Text(
               widget.text,
               style: textStyle,

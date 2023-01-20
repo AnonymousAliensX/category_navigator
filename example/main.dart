@@ -8,7 +8,17 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  final List<String> itemsList = const ['All', 'Android', 'ML', 'Python', 'Flutter', 'Text', 'iOS', 'Web', 'Windows'];
+  final List<String> itemsList = const [
+    'All',
+    'Android',
+    'ML',
+    'Python',
+    'Flutter',
+    'Text',
+    'iOS',
+    'Web',
+    'Windows'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +30,6 @@ class MyApp extends StatelessWidget {
                   items: itemsList,
                   navigatorController: NavigatorController(),
                   scrollController: ScrollController(),
-                )
-            )
-        ));
+                ))));
   }
 }

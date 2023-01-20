@@ -7,7 +7,6 @@ void main() {
     final calculator = CategoryNavigator(
         items: const ['aaa', 'fff'],
         navigatorController: NavigatorController(),
-        scrollController: ScrollController()
-    );
+        scrollController: ScrollController());
   });
 }

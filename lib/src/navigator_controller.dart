@@ -11,5 +11,6 @@ class NavigatorController extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isItemActive(Key key) => activeItemIndex == (key as GlobalObjectKey).value as int;
+  bool isItemActive(Key key) =>
+      activeItemIndex == (key as GlobalObjectKey).value as int;
 }

@@ -9,6 +9,7 @@ class CategoryNavigator extends StatefulWidget {
     required this.items,
     required this.navigatorController,
     required this.scrollController,
+    this.icons,
     this.defaultActiveItem = 0,
     this.navigatorBackgroundColor = Colors.black,
     this.margin = const EdgeInsets.symmetric(horizontal: 16),
@@ -29,6 +30,7 @@ class CategoryNavigator extends StatefulWidget {
   });
 
   final List<String> items;
+  final List<IconData>? icons;
   final int defaultActiveItem;
 
   final Color navigatorBackgroundColor;
@@ -83,6 +85,7 @@ class _HorizontalNavigationState extends State<CategoryNavigator> {
         unselectedTextStyle: widget.unselectedTextStyle,
         highlightTextStyle: widget.highlightTextStyle,
         elevation: widget.itemElevation,
+        iconData: widget.icons![index],
       ));
     });
     widget.navigatorController

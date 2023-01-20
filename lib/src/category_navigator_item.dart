@@ -14,9 +14,11 @@ class NavigatorItem extends StatefulWidget {
     required this.elevation,
     required this.highlightTextStyle,
     required this.unselectedTextStyle,
+    this.iconData,
   });
 
   final String text;
+  final IconData? iconData;
   final Color highlightBackgroundColor;
   final Color unselectedBackgroundColor;
   final TextStyle highlightTextStyle;
@@ -38,6 +40,7 @@ class _NavigatorItemState extends State<NavigatorItem> {
   BoxDecoration decoration = const BoxDecoration();
   double elevation = 0;
   late TextStyle textStyle;
+  late Widget child;
 
   @override
   void initState() {
@@ -54,12 +57,28 @@ class _NavigatorItemState extends State<NavigatorItem> {
         shadow = widget.shadow;
         elevation = widget.elevation;
         textStyle = widget.highlightTextStyle;
+        textColor = widget.highlightTextStyle.color!;
+        child = Row(children: [
+          Icon(
+            widget.iconData,
+            color: textColor,
+          ),
+          Text(
+            widget.text,
+            style: textStyle,
+          )
+        ]);
       } else {
         backgroundColor = widget.unselectedBackgroundColor;
         shadow = [const BoxShadow(color: Colors.transparent)];
         decoration = const BoxDecoration();
         elevation = 0;
         textStyle = widget.unselectedTextStyle;
+        textColor = widget.unselectedTextStyle.color!;
+        child = Icon(
+          widget.iconData,
+          color: textColor,
+        );
       }
     });
   }
@@ -78,19 +97,15 @@ class _NavigatorItemState extends State<NavigatorItem> {
           borderRadius: BorderRadius.circular(10),
           color: backgroundColor,
           child: AnimatedContainer(
-            padding: widget.padding,
-            curve: Curves.decelerate,
-            duration: const Duration(milliseconds: 200),
-            decoration: BoxDecoration(
-                color: backgroundColor,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: shadow),
-            child: Text(
-              widget.text,
-              style: textStyle,
-            ),
-          ),
+              padding: widget.padding,
+              curve: Curves.decelerate,
+              duration: const Duration(milliseconds: 200),
+              decoration: BoxDecoration(
+                  color: backgroundColor,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: shadow),
+              child: child),
         ),
       ),
     );

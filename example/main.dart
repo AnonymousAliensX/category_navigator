@@ -33,3 +33,48 @@ class MyApp extends StatelessWidget {
                 ))));
   }
 }
+
+class IconsExample extends StatelessWidget {
+  const IconsExample({Key? key}) : super(key: key);
+
+  final List<String> itemsList = const [
+    'All',
+    'Android',
+    'Animation',
+    'Flutter',
+    'Text',
+    'iOS',
+    'Web',
+    'Windows'
+  ];
+
+  final List<dynamic> icons = const [
+    null,
+    Icons.android,
+    Icons.animation,
+    Icons.flutter_dash,
+    Icons.text_fields,
+    Icons.apple,
+    Icons.web,
+    Icons.laptop_windows_sharp
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SafeArea(
+            child: CategoryNavigator(
+              items: itemsList,
+              icons: icons,
+              navigatorController: NavigatorController(),
+              scrollController: ScrollController(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

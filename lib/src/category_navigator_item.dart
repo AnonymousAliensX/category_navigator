@@ -4,7 +4,7 @@ import 'package:category_navigator/src/navigator_controller.dart';
 class NavigatorItem extends StatefulWidget {
   const NavigatorItem({
     super.key,
-    required this.text,
+    required this.label,
     required this.controller,
     required this.highlightBackgroundColor,
     required this.unselectedBackgroundColor,
@@ -17,7 +17,7 @@ class NavigatorItem extends StatefulWidget {
     this.iconData,
   });
 
-  final String text;
+  final String label;
   final IconData? iconData;
   final Color highlightBackgroundColor;
   final Color unselectedBackgroundColor;
@@ -33,21 +33,22 @@ class NavigatorItem extends StatefulWidget {
   State<NavigatorItem> createState() => _NavigatorItemState();
 }
 
-class _NavigatorItemState extends State<NavigatorItem> {
-  late Color backgroundColor;
-  late Color textColor;
-  late List<BoxShadow> shadow;
+class _NavigatorItemState extends State<NavigatorItem>
+    with TickerProviderStateMixin {
+  late Color backgroundColor = widget.unselectedBackgroundColor;
+  late Color textColor = widget.unselectedTextStyle.color ?? Colors.white;
+  late List<BoxShadow> shadow = widget.shadow;
   BoxDecoration decoration = const BoxDecoration();
   double elevation = 0;
-  late TextStyle textStyle;
+  late TextStyle textStyle = widget.unselectedTextStyle;
   late Widget child;
+  double widgetWidth = 0;
 
   @override
   void initState() {
     super.initState();
     assert(widget.key is GlobalObjectKey);
     widget.controller.addListener(toggleState);
-    toggleState();
   }
 
   toggleState() {
@@ -58,16 +59,10 @@ class _NavigatorItemState extends State<NavigatorItem> {
         elevation = widget.elevation;
         textStyle = widget.highlightTextStyle;
         textColor = widget.highlightTextStyle.color!;
-        child = Row(children: [
-          Icon(
-            widget.iconData,
-            color: textColor,
-          ),
-          Text(
-            widget.text,
-            style: textStyle,
-          )
-        ]);
+        child = Text(
+          widget.label,
+          style: textStyle,
+        );
       } else {
         backgroundColor = widget.unselectedBackgroundColor;
         shadow = [const BoxShadow(color: Colors.transparent)];
@@ -75,9 +70,9 @@ class _NavigatorItemState extends State<NavigatorItem> {
         elevation = 0;
         textStyle = widget.unselectedTextStyle;
         textColor = widget.unselectedTextStyle.color!;
-        child = Icon(
-          widget.iconData,
-          color: textColor,
+        child = const SizedBox(
+          height: 0,
+          width: 0,
         );
       }
     });
@@ -85,6 +80,7 @@ class _NavigatorItemState extends State<NavigatorItem> {
 
   @override
   Widget build(BuildContext context) {
+    toggleState();
     return InkWell(
       highlightColor: Colors.transparent,
       splashColor: Colors.transparent,
@@ -105,7 +101,23 @@ class _NavigatorItemState extends State<NavigatorItem> {
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: shadow),
-              child: child),
+              child: (widget.iconData == null)
+                  ? Text(
+                      widget.label,
+                      style: textStyle,
+                    )
+                  : Row(mainAxisSize: MainAxisSize.min, children: [
+                      Icon(
+                        widget.iconData,
+                        color: textColor,
+                      ),
+                      AnimatedSize(
+                        duration: const Duration(milliseconds: 200),
+                        child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 200),
+                            child: child),
+                      )
+                    ])),
         ),
       ),
     );

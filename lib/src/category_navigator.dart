@@ -9,6 +9,7 @@ class CategoryNavigator extends StatefulWidget {
     required this.items,
     required this.navigatorController,
     required this.scrollController,
+    this.expand = true,
     this.icons,
     this.defaultActiveItem = 0,
     this.navigatorBackgroundColor = Colors.black,
@@ -30,8 +31,9 @@ class CategoryNavigator extends StatefulWidget {
   });
 
   final List<String> items;
-  final List<IconData>? icons;
+  final List<dynamic>? icons;
   final int defaultActiveItem;
+  final bool expand;
 
   final Color navigatorBackgroundColor;
   final EdgeInsets margin;
@@ -73,7 +75,7 @@ class _HorizontalNavigationState extends State<CategoryNavigator> {
       keys.add(key);
       itemWidgets.add(NavigatorItem(
         key: key,
-        text: item,
+        label: item,
         controller: widget.navigatorController,
         highlightBackgroundColor: widget.highlightBackgroundColor,
         unselectedBackgroundColor: (widget.unselectedBackgroundColor == null)
@@ -85,7 +87,7 @@ class _HorizontalNavigationState extends State<CategoryNavigator> {
         unselectedTextStyle: widget.unselectedTextStyle,
         highlightTextStyle: widget.highlightTextStyle,
         elevation: widget.itemElevation,
-        iconData: widget.icons![index],
+        iconData: (widget.icons == null) ? null : widget.icons![index],
       ));
     });
     widget.navigatorController
@@ -103,21 +105,32 @@ class _HorizontalNavigationState extends State<CategoryNavigator> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    Widget nav = Card(
       shape: widget.shape,
       color: widget.navigatorBackgroundColor,
       margin: widget.margin,
       elevation: widget.navigatorElevation,
       clipBehavior: Clip.hardEdge,
-      child: SingleChildScrollView(
-        scrollDirection: widget.axis,
-        controller: widget.scrollController,
-        child: Padding(
-          padding: widget.padding,
-          child: Flex(direction: widget.axis, children: itemWidgets),
+      child: Center(
+        heightFactor: 1,
+        widthFactor: 1,
+        child: SingleChildScrollView(
+          scrollDirection: widget.axis,
+          controller: widget.scrollController,
+          child: Padding(
+            padding: widget.padding,
+            child: Flex(direction: widget.axis, children: itemWidgets),
+          ),
         ),
       ),
     );
+    return (widget.expand) ? fillMainAxis(nav) : nav;
+  }
+
+  fillMainAxis(nav) {
+    return (widget.axis == Axis.horizontal)
+        ? SizedBox(width: double.infinity, child: nav)
+        : SizedBox(height: double.infinity, child: nav);
   }
 
   @override

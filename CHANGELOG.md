@@ -9,4 +9,3 @@
 ## 1.1.0 - 27/01/2023
 
 * Added support for icons in addition to labels
-* Now also supports icons with labels

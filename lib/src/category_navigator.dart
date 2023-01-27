@@ -73,22 +73,7 @@ class _HorizontalNavigationState extends State<CategoryNavigator> {
     items.forEachIndexed((index, item) {
       GlobalObjectKey key = GlobalObjectKey(index);
       keys.add(key);
-      itemWidgets.add(NavigatorItem(
-        key: key,
-        label: item,
-        controller: widget.navigatorController,
-        highlightBackgroundColor: widget.highlightBackgroundColor,
-        unselectedBackgroundColor: (widget.unselectedBackgroundColor == null)
-            ? widget.navigatorBackgroundColor
-            : widget.unselectedBackgroundColor!,
-        shadow: widget.shadow,
-        padding: widget.itemPadding,
-        margin: widget.itemMargin,
-        unselectedTextStyle: widget.unselectedTextStyle,
-        highlightTextStyle: widget.highlightTextStyle,
-        elevation: widget.itemElevation,
-        iconData: (widget.icons == null) ? null : widget.icons![index],
-      ));
+      itemWidgets.add(_generateNavigationItem(index));
     });
     widget.navigatorController
         .updateActiveItem(keys.elementAt(widget.defaultActiveItem));
@@ -103,9 +88,35 @@ class _HorizontalNavigationState extends State<CategoryNavigator> {
     });
   }
 
+  _generateNavigationItem(int index) {
+    Widget item = NavigatorItem(
+      key: keys[index],
+      label: widget.labels[index],
+      controller: widget.navigatorController,
+      highlightBackgroundColor: widget.highlightBackgroundColor,
+      unselectedBackgroundColor: (widget.unselectedBackgroundColor == null)
+          ? widget.navigatorBackgroundColor
+          : widget.unselectedBackgroundColor!,
+      shadow: widget.shadow,
+      padding: widget.itemPadding,
+      margin: widget.itemMargin,
+      unselectedTextStyle: widget.unselectedTextStyle,
+      highlightTextStyle: widget.highlightTextStyle,
+      elevation: widget.itemElevation,
+      iconData: (widget.icons == null) ? null : widget.icons![index],
+    );
+    if (widget.icons != null && widget.icons![index] == null) {
+      item = FittedBox(
+        fit: BoxFit.contain,
+        child: item,
+      );
+    }
+    return item;
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget nav = Card(
+    Card nav = Card(
       shape: widget.shape,
       color: widget.navigatorBackgroundColor,
       margin: widget.margin,
@@ -118,29 +129,28 @@ class _HorizontalNavigationState extends State<CategoryNavigator> {
           scrollDirection: widget.axis,
           controller: widget.scrollController,
           child: Padding(
-              padding: widget.padding,
-              child: Flex(
-                direction: widget.axis,
-                children: itemWidgets,
-              )
-              // child: Flex(direction: widget.axis, children: itemWidgets),
-              ),
+            padding: widget.padding,
+            child: getFlex(child: Flex(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              direction: widget.axis,
+              children: itemWidgets,
+            ))
+          ),
         ),
       ),
     );
-    return (widget.expand) ? fillMainAxis(nav) : nav;
+    return (widget.expand) ? fillMainAxis(child: nav) : nav;
   }
 
-  SizedBox fillMainAxis(nav) {
-    return (widget.axis == Axis.horizontal)
-        ? SizedBox(width: double.infinity, child: nav)
-        : SizedBox(height: double.infinity, child: nav);
+  Widget getFlex({required Flex child}) {
+    return (widget.axis == Axis.horizontal) ?
+      IntrinsicHeight(child: child) : child;
   }
 
-  BoxConstraints getConstraints() {
+  SizedBox fillMainAxis({required Card child}) {
     return (widget.axis == Axis.horizontal)
-        ? BoxConstraints(maxHeight: MediaQuery.of(context).size.height)
-        : BoxConstraints(maxHeight: MediaQuery.of(context).size.width);
+        ? SizedBox(width: double.infinity, child: child)
+        : SizedBox(height: double.infinity, child: child);
   }
 
   @override

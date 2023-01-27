@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class NavigatorController extends ChangeNotifier {
   NavigatorController();
 
-  late int activeItemIndex;
+  int activeItemIndex = 0;
 
   updateActiveItem(GlobalObjectKey key) {
     ChangeNotifier.debugAssertNotDisposed(this);

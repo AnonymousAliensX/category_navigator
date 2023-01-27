@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('test with base implementation', () {
     final calculator = CategoryNavigator(
-        items: const ['aaa', 'fff'],
+        labels: const ['aaa', 'fff'],
         navigatorController: NavigatorController(),
         scrollController: ScrollController());
   });

@@ -111,6 +111,7 @@ class _NavigatorItemState extends State<NavigatorItem>
                         widget.iconData,
                         color: textColor,
                       ),
+                      const SizedBox(width: 5),
                       AnimatedSize(
                         duration: const Duration(milliseconds: 200),
                         child: AnimatedSwitcher(

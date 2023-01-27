@@ -1,39 +1,6 @@
 import 'package:category_navigator/category_navigator.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  final List<String> itemsList = const [
-    'All',
-    'Android',
-    'ML',
-    'Python',
-    'Flutter',
-    'Text',
-    'iOS',
-    'Web',
-    'Windows'
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: SafeArea(
-            child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CategoryNavigator(
-                  items: itemsList,
-                  navigatorController: NavigatorController(),
-                  scrollController: ScrollController(),
-                ))));
-  }
-}
-
 class IconsExample extends StatelessWidget {
   const IconsExample({Key? key}) : super(key: key);
 
@@ -48,6 +15,7 @@ class IconsExample extends StatelessWidget {
     'Windows'
   ];
 
+  /// you can pass in null instead of an icon, in case you only want a label in any category
   final List<dynamic> icons = const [
     null,
     Icons.android,
@@ -67,7 +35,7 @@ class IconsExample extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: SafeArea(
             child: CategoryNavigator(
-              items: itemsList,
+              labels: itemsList,
               icons: icons,
               navigatorController: NavigatorController(),
               scrollController: ScrollController(),

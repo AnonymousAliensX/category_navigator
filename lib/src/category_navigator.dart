@@ -6,7 +6,7 @@ import 'package:category_navigator/src/navigator_controller.dart';
 class CategoryNavigator extends StatefulWidget {
   const CategoryNavigator({
     super.key,
-    required this.items,
+    required this.labels,
     required this.navigatorController,
     required this.scrollController,
     this.expand = true,
@@ -28,9 +28,9 @@ class CategoryNavigator extends StatefulWidget {
     this.itemMargin = const EdgeInsets.symmetric(horizontal: 8),
     this.highlightTextStyle = const TextStyle(color: Colors.black),
     this.unselectedTextStyle = const TextStyle(color: Colors.white),
-  });
+  }) : assert(icons == null || icons.length == labels.length);
 
-  final List<String> items;
+  final List<String> labels;
   final List<dynamic>? icons;
   final int defaultActiveItem;
   final bool expand;
@@ -65,7 +65,7 @@ class _HorizontalNavigationState extends State<CategoryNavigator> {
 
   @override
   void initState() {
-    _generateWidgetList(widget.items);
+    _generateWidgetList(widget.labels);
     super.initState();
   }
 
@@ -118,19 +118,29 @@ class _HorizontalNavigationState extends State<CategoryNavigator> {
           scrollDirection: widget.axis,
           controller: widget.scrollController,
           child: Padding(
-            padding: widget.padding,
-            child: Flex(direction: widget.axis, children: itemWidgets),
-          ),
+              padding: widget.padding,
+              child: Flex(
+                direction: widget.axis,
+                children: itemWidgets,
+              )
+              // child: Flex(direction: widget.axis, children: itemWidgets),
+              ),
         ),
       ),
     );
     return (widget.expand) ? fillMainAxis(nav) : nav;
   }
 
-  fillMainAxis(nav) {
+  SizedBox fillMainAxis(nav) {
     return (widget.axis == Axis.horizontal)
         ? SizedBox(width: double.infinity, child: nav)
         : SizedBox(height: double.infinity, child: nav);
+  }
+
+  BoxConstraints getConstraints() {
+    return (widget.axis == Axis.horizontal)
+        ? BoxConstraints(maxHeight: MediaQuery.of(context).size.height)
+        : BoxConstraints(maxHeight: MediaQuery.of(context).size.width);
   }
 
   @override

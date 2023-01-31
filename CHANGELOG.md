@@ -13,3 +13,7 @@
 ## 1.1.1 - 28/01/2023
 
 * Height issue fixed: Read [commit](https://github.com/AnonymousAliensX/category_navigator/commit/2920f9cd5de3cdd03bd38fae2fe8851f6d1ed0b5) description for detailed explanation of the issue
+
+## 1.1.2 - 31/01/2023
+
+* Only icons support added: Before the navigator would have worked if only labels were passed, or if labels and icons both were passed, but it wouldn't have worked with icons only. Now it will work even if only icons are passed.

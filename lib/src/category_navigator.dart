@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:collection/collection.dart';
 import 'package:category_navigator/src/category_navigator_item.dart';
 import 'package:category_navigator/src/navigator_controller.dart';
 
 class CategoryNavigator extends StatefulWidget {
   const CategoryNavigator({
     super.key,
-    required this.labels,
+    this.labels,
     required this.navigatorController,
     required this.scrollController,
     this.expand = true,
@@ -28,9 +27,12 @@ class CategoryNavigator extends StatefulWidget {
     this.itemMargin = const EdgeInsets.symmetric(horizontal: 8),
     this.highlightTextStyle = const TextStyle(color: Colors.black),
     this.unselectedTextStyle = const TextStyle(color: Colors.white),
-  }) : assert(icons == null || icons.length == labels.length);
+  })  : assert(icons != null || labels != null),
+        assert((icons != null && labels != null)
+            ? (icons.length == labels.length)
+            : true);
 
-  final List<String> labels;
+  final List<String>? labels;
   final List<dynamic>? icons;
   final int defaultActiveItem;
   final bool expand;
@@ -56,25 +58,31 @@ class CategoryNavigator extends StatefulWidget {
   final ScrollController scrollController;
 
   @override
-  State<CategoryNavigator> createState() => _HorizontalNavigationState();
+  State<CategoryNavigator> createState() => _CategoryNavigatorState();
 }
 
-class _HorizontalNavigationState extends State<CategoryNavigator> {
+class _CategoryNavigatorState extends State<CategoryNavigator> {
   List<Widget> itemWidgets = [];
   List<GlobalObjectKey> keys = [];
+  int length = 0;
 
   @override
   void initState() {
-    _generateWidgetList(widget.labels);
+    if (widget.labels != null) {
+      length = widget.labels!.length;
+    } else {
+      length = widget.icons!.length;
+    }
+    _generateWidgetList();
     super.initState();
   }
 
-  _generateWidgetList(List<String> items) {
-    items.forEachIndexed((index, item) {
+  _generateWidgetList() {
+    for (int index = 0; index < length; index++) {
       GlobalObjectKey key = GlobalObjectKey(index);
       keys.add(key);
       itemWidgets.add(_generateNavigationItem(index));
-    });
+    }
     widget.navigatorController
         .updateActiveItem(keys.elementAt(widget.defaultActiveItem));
     double x = 0;
@@ -91,7 +99,7 @@ class _HorizontalNavigationState extends State<CategoryNavigator> {
   _generateNavigationItem(int index) {
     Widget item = NavigatorItem(
       key: keys[index],
-      label: widget.labels[index],
+      label: (widget.labels == null) ? null : widget.labels![index],
       controller: widget.navigatorController,
       highlightBackgroundColor: widget.highlightBackgroundColor,
       unselectedBackgroundColor: (widget.unselectedBackgroundColor == null)
@@ -129,13 +137,13 @@ class _HorizontalNavigationState extends State<CategoryNavigator> {
           scrollDirection: widget.axis,
           controller: widget.scrollController,
           child: Padding(
-            padding: widget.padding,
-            child: getFlex(child: Flex(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              direction: widget.axis,
-              children: itemWidgets,
-            ))
-          ),
+              padding: widget.padding,
+              child: getFlex(
+                  child: Flex(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                direction: widget.axis,
+                children: itemWidgets,
+              ))),
         ),
       ),
     );
@@ -143,8 +151,9 @@ class _HorizontalNavigationState extends State<CategoryNavigator> {
   }
 
   Widget getFlex({required Flex child}) {
-    return (widget.axis == Axis.horizontal) ?
-      IntrinsicHeight(child: child) : child;
+    return (widget.axis == Axis.horizontal)
+        ? IntrinsicHeight(child: child)
+        : child;
   }
 
   SizedBox fillMainAxis({required Card child}) {

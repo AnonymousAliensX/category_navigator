@@ -4,7 +4,8 @@ import 'package:category_navigator/src/navigator_controller.dart';
 class NavigatorItem extends StatefulWidget {
   const NavigatorItem({
     super.key,
-    required this.label,
+    this.label,
+    this.iconData,
     required this.controller,
     required this.highlightBackgroundColor,
     required this.unselectedBackgroundColor,
@@ -14,10 +15,9 @@ class NavigatorItem extends StatefulWidget {
     required this.elevation,
     required this.highlightTextStyle,
     required this.unselectedTextStyle,
-    this.iconData,
   });
 
-  final String label;
+  final String? label;
   final IconData? iconData;
   final Color highlightBackgroundColor;
   final Color unselectedBackgroundColor;
@@ -60,7 +60,7 @@ class _NavigatorItemState extends State<NavigatorItem>
         textStyle = widget.highlightTextStyle;
         textColor = widget.highlightTextStyle.color!;
         child = Text(
-          widget.label,
+          widget.label ?? '',
           style: textStyle,
         );
       } else {
@@ -82,47 +82,47 @@ class _NavigatorItemState extends State<NavigatorItem>
   Widget build(BuildContext context) {
     toggleState();
     return InkWell(
-      highlightColor: Colors.transparent,
-      splashColor: Colors.transparent,
-      onTap: () =>
-          widget.controller.updateActiveItem(widget.key as GlobalObjectKey),
-      child: Padding(
-        padding: widget.margin,
-        child: Material(
-          elevation: elevation,
-          borderRadius: BorderRadius.circular(10),
-          color: backgroundColor,
-          child: AnimatedContainer(
-              padding: widget.padding,
-              curve: Curves.decelerate,
-              duration: const Duration(milliseconds: 200),
-              decoration: BoxDecoration(
-                  color: backgroundColor,
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: shadow),
-              child: (widget.iconData == null)
-                  ? Text(
-                      widget.label,
-                      style: textStyle,
-                    )
-                  : Row(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(
-                        widget.iconData,
-                        color: textColor,
-                      ),
-                      const SizedBox(width: 5),
-                      AnimatedSize(
-                        duration: const Duration(milliseconds: 200),
-                        child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 200),
-                            child: child),
-                      )
-                    ])),
-        ),
-      ),
-    );
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        onTap: () =>
+            widget.controller.updateActiveItem(widget.key as GlobalObjectKey),
+        child: Padding(
+            padding: widget.margin,
+            child: Material(
+                elevation: elevation,
+                borderRadius: BorderRadius.circular(10),
+                color: backgroundColor,
+                child: AnimatedContainer(
+                    padding: widget.padding,
+                    curve: Curves.decelerate,
+                    duration: const Duration(milliseconds: 200),
+                    decoration: BoxDecoration(
+                        color: backgroundColor,
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: shadow),
+                    child: _buildChild(child)))));
   }
+
+  _buildChild(Widget child) => (widget.iconData == null)
+      ? Text(
+          widget.label!,
+          style: textStyle,
+        )
+      : (widget.label != null)
+          ? Row(mainAxisSize: MainAxisSize.min, children: [
+              Icon(
+                widget.iconData,
+                color: textColor,
+              ),
+              const SizedBox(width: 5),
+              AnimatedSize(
+                duration: const Duration(milliseconds: 200),
+                child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200), child: child),
+              )
+            ])
+          : Icon(widget.iconData, color: textColor);
 
   @override
   void dispose() {

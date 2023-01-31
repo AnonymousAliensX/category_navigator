@@ -6,10 +6,10 @@ A flutter ui package for cool navigation bar with a lot of customization options
 
 ## Features
 
--   navigation bar customization like color, elevation, shape, border radius, axis, etc
--   unselected and highlighted item customization like background color, text color, shape, shadow, elevation, etc
--   animate to default active item
-- added icon support
+- navigation bar customization like color, elevation, shape, border radius, axis, etc
+- unselected and highlighted item customization like background color, text color, shape, shadow, elevation, etc
+- animate to default active item
+- can use icons, or labels, or both
 
 ## Getting started
 

@@ -35,6 +35,7 @@ class CategoryNavigator extends StatefulWidget {
   final List<String>? labels;
   final List<dynamic>? icons;
   final int defaultActiveItem;
+  final bool expand;
 
   final Color navigatorBackgroundColor;
   final EdgeInsets margin;

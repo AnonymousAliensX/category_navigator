@@ -3,7 +3,6 @@ import 'package:category_navigator/src/category_navigator_item.dart';
 import 'package:category_navigator/src/navigator_controller.dart';
 
 class CategoryNavigator extends StatefulWidget {
-
   const CategoryNavigator({
     super.key,
     this.labels,
@@ -69,7 +68,6 @@ class CategoryNavigator extends StatefulWidget {
 }
 
 class _CategoryNavigatorState extends State<CategoryNavigator> {
-
   List<Widget> itemWidgets = [];
   List<GlobalObjectKey> keys = [];
   int length = 0;
@@ -107,7 +105,8 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
       keys.add(key);
       itemWidgets.add(_generateNavigationItem(index));
     }
-    navigatorController.updateActiveItem(keys.elementAt(widget.defaultActiveItem));
+    navigatorController
+        .updateActiveItem(keys.elementAt(widget.defaultActiveItem));
     double x = 0;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       for (int i = 0; i < widget.defaultActiveItem; i++) {
@@ -127,12 +126,17 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
       label: (widget.labels == null) ? null : widget.labels![index],
       controller: navigatorController,
       highlightBackgroundColor: widget.highlightBackgroundColor ?? Colors.white,
-      unselectedBackgroundColor: widget.unselectedBackgroundColor ?? Colors.black,
-      highlightTextStyle: widget.highlightTextStyle ?? const TextStyle(color: Colors.black),
-      unselectedTextStyle: widget.unselectedTextStyle ?? const TextStyle(color: Colors.white),
+      unselectedBackgroundColor:
+          widget.unselectedBackgroundColor ?? Colors.black,
+      highlightTextStyle:
+          widget.highlightTextStyle ?? const TextStyle(color: Colors.black),
+      unselectedTextStyle:
+          widget.unselectedTextStyle ?? const TextStyle(color: Colors.white),
       shadow: widget.shadow ?? const [BoxShadow(color: Colors.black)],
-      borderRadius: widget.borderRadius ?? const BorderRadius.all(Radius.circular(10)),
-      padding: widget.itemPadding ?? const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      borderRadius:
+          widget.borderRadius ?? const BorderRadius.all(Radius.circular(10)),
+      padding: widget.itemPadding ??
+          const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       margin: widget.itemMargin ?? const EdgeInsets.symmetric(horizontal: 8),
       elevation: widget.itemElevation ?? 0,
       iconData: (widget.icons == null) ? null : widget.icons![index],

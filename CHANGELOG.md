@@ -23,3 +23,7 @@
 * Issue where 'borderRadius' parameter was not having effect on the item fixed
 * Documentation added
 * Minor changes
+
+## 1.1.4 - 02/02/2023
+
+* added examples

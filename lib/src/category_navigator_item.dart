@@ -7,24 +7,28 @@ class NavigatorItem extends StatefulWidget {
     this.label,
     this.iconData,
     required this.controller,
-    required this.highlightBackgroundColor,
-    required this.unselectedBackgroundColor,
-    required this.shadow,
-    required this.padding,
-    required this.margin,
-    required this.elevation,
-    required this.highlightTextStyle,
-    required this.unselectedTextStyle,
+    this.highlightBackgroundColor = Colors.white,
+    this.unselectedBackgroundColor = Colors.black,
+    this.highlightTextStyle = const TextStyle(color: Colors.black),
+    this.unselectedTextStyle = const TextStyle(color: Colors.white),
+    this.shadow = const [BoxShadow(color: Colors.black)],
+    this.borderRadius = const BorderRadius.all(Radius.circular(10)),
+    this.padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+    this.margin = const EdgeInsets.symmetric(horizontal: 8),
+    this.elevation = 0,
   });
+
+  /// [label] and [iconData] both cannot be null
 
   final String? label;
   final IconData? iconData;
+  final NavigatorController controller;
   final Color highlightBackgroundColor;
   final Color unselectedBackgroundColor;
   final TextStyle highlightTextStyle;
   final TextStyle unselectedTextStyle;
   final List<BoxShadow> shadow;
-  final NavigatorController controller;
+  final BorderRadius borderRadius;
   final EdgeInsets padding;
   final EdgeInsets margin;
   final double elevation;
@@ -38,7 +42,6 @@ class _NavigatorItemState extends State<NavigatorItem>
   late Color backgroundColor = widget.unselectedBackgroundColor;
   late Color textColor = widget.unselectedTextStyle.color ?? Colors.white;
   late List<BoxShadow> shadow = widget.shadow;
-  BoxDecoration decoration = const BoxDecoration();
   double elevation = 0;
   late TextStyle textStyle = widget.unselectedTextStyle;
   late Widget child;
@@ -66,7 +69,6 @@ class _NavigatorItemState extends State<NavigatorItem>
       } else {
         backgroundColor = widget.unselectedBackgroundColor;
         shadow = [const BoxShadow(color: Colors.transparent)];
-        decoration = const BoxDecoration();
         elevation = 0;
         textStyle = widget.unselectedTextStyle;
         textColor = widget.unselectedTextStyle.color!;
@@ -90,7 +92,7 @@ class _NavigatorItemState extends State<NavigatorItem>
             padding: widget.margin,
             child: Material(
                 elevation: elevation,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: widget.borderRadius,
                 color: backgroundColor,
                 child: AnimatedContainer(
                     padding: widget.padding,
@@ -104,6 +106,7 @@ class _NavigatorItemState extends State<NavigatorItem>
                     child: _buildChild(child)))));
   }
 
+  /// Generates child based on weather icon and label are available or not.
   _buildChild(Widget child) => (widget.iconData == null)
       ? Text(
           widget.label!,

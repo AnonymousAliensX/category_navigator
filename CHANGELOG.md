@@ -17,3 +17,9 @@
 ## 1.1.2 - 31/01/2023
 
 * Only icons support added: Before the navigator would have worked if only labels were passed, or if labels and icons both were passed, but it wouldn't have worked with icons only. Now it will work even if only icons are passed.
+
+## 1.1.3 - 02/02/2023
+
+* Issue where 'borderRadius' parameter was not having effect on the item fixed
+* Documentation added
+* Minor changes

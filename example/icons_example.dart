@@ -34,7 +34,7 @@ class IconsExample extends StatelessWidget {
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: SafeArea(
-            child: CategoryNavigator(
+            child: NavigationMenu(
               labels: itemsList,
               icons: icons,
               navigatorController: NavigatorController(),

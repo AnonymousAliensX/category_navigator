@@ -54,6 +54,7 @@ class _NavigatorItemState extends State<NavigatorItem>
     widget.controller.addListener(toggleState);
   }
 
+  /// updates the state of the item
   toggleState() {
     setState(() {
       if (widget.controller.isItemActive(widget.key!)) {

@@ -35,21 +35,39 @@ class CategoryNavigator extends StatefulWidget {
   /// This bool variable tells the navigation bar whether to take the full space
   /// available in the [axis] of the menu i.e. if the [axis] parameter is
   /// [Axis.horizontal] and this parameter is true, the navigation bar will
-  /// completely expand in horizontal direction. Value defaults to [true].
+  /// completely expand in horizontal direction. Value defaults to true.
   final bool expand;
 
+  /// The labels used for navigation items, can be null
   final List<String>? labels;
+
+  /// The icons used for navigation items, can be null
   final List<dynamic>? icons;
+
+  /// The item that will be set active at first, defaults to 0
   final int defaultActiveItem;
 
+  /// Background color for Navigation menu
   final Color navigatorBackgroundColor;
+
+  /// The margin around the menu
   final EdgeInsets margin;
+
+  /// The padding around the menu
   final EdgeInsets padding;
+
+  /// The orientation/direction of the navigation menu
   final Axis axis;
+
+  /// The [ShapeBorder] property that can be used to customize background shape
+  /// of the navigation menu
   final ShapeBorder shape;
+
+  /// The elevation of the navigation menu
   final double navigatorElevation;
 
   /// Additional parameters for customization of the [NavigatorItem].
+
   final Color? highlightBackgroundColor;
   final Color? unselectedBackgroundColor;
   final TextStyle? highlightTextStyle;
@@ -60,7 +78,10 @@ class CategoryNavigator extends StatefulWidget {
   final EdgeInsets? itemPadding;
   final EdgeInsets? itemMargin;
 
+  /// The controller object to handle active items
   final NavigatorController? navigatorController;
+
+  /// The controller to handle scrolling of the menu
   final ScrollController? scrollController;
 
   @override
@@ -87,10 +108,11 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
     super.initState();
   }
 
+  /// Generates all items for navigation menu
+  ///
   /// This method adds all the navigation items in the [itemWidgets] list
   /// generated using [_generateNavigationItem] method and after the creation
   /// of all the widgets, it updates the [NavigatorController] for [CategoryNavigator.defaultActiveItem].
-  ///
   /// Even though the item is being set as active, it will be not be visible to
   /// the user if [CategoryNavigator.defaultActiveItem] is set to a larger index. For that, [WidgetsBinding.addPostFrameCallback]
   /// is used to register a callback which is called during the frame, so the widgets
@@ -118,6 +140,8 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
     });
   }
 
+  /// Generate navigation item for the data
+  ///
   /// This method generates a [NavigatorItem] widget for each label or icon and
   /// wraps it around a FittedBox if icon is null when using both labels and icons.
   _generateNavigationItem(int index) {
@@ -178,16 +202,24 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
     return (widget.expand) ? fillMainAxis(child: nav) : nav;
   }
 
-  Widget getFlex({required Flex child}) {
-    return (widget.axis == Axis.horizontal)
-        ? IntrinsicHeight(child: child)
-        : child;
-  }
-
+  ///Expands the navigation menu to fill complete space
+  ///
+  /// This method wraps the child in a [SizedBox] with one dimension set to
+  /// [double.infinity] to ensure the menu takes up whole space in given [axis]
+  /// direction. If [CategoryNavigator.expand] is true, this method is called
+  /// otherwise the navigation menu only takes up just enough space for the items.
   SizedBox fillMainAxis({required Card child}) {
     return (widget.axis == Axis.horizontal)
         ? SizedBox(width: double.infinity, child: child)
         : SizedBox(height: double.infinity, child: child);
+  }
+
+  /// This method wraps the [Flex] in an [IntrinsicHeight] widget if the [axis]
+  /// is [Axis.horizontal] to ensure no height differences in children of the menu.
+  Widget getFlex({required Flex child}) {
+    return (widget.axis == Axis.horizontal)
+        ? IntrinsicHeight(child: child)
+        : child;
   }
 
   @override

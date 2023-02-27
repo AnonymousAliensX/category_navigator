@@ -134,9 +134,11 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
       for (int i = 0; i < widget.defaultActiveItem; i++) {
         x += (keys.elementAt(i)).currentContext!.size!.width;
       }
-      scrollController.animateTo(x,
+      if (x > MediaQuery.of(context).size.width) {
+        scrollController.animateTo(x,
           duration: Duration(milliseconds: widget.defaultActiveItem * 100),
           curve: Curves.linear);
+      }
     });
   }
 

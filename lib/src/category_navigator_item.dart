@@ -102,7 +102,7 @@ class _NavigatorItemState extends State<NavigatorItem>
                     decoration: BoxDecoration(
                         color: backgroundColor,
                         shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: widget.borderRadius,
                         boxShadow: shadow),
                     child: _buildChild(child)))));
   }
@@ -118,6 +118,7 @@ class _NavigatorItemState extends State<NavigatorItem>
               Icon(
                 widget.iconData,
                 color: textColor,
+                size: 20
               ),
               const SizedBox(width: 5),
               AnimatedSize(
@@ -126,7 +127,7 @@ class _NavigatorItemState extends State<NavigatorItem>
                     duration: const Duration(milliseconds: 200), child: child),
               )
             ])
-          : Icon(widget.iconData, color: textColor);
+          : Icon(widget.iconData, color: textColor, size: 20);
 
   @override
   void dispose() {

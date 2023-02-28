@@ -102,10 +102,7 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
     } else {
       length = widget.icons!.length;
     }
-    navigatorController = widget.navigatorController ??
-        ((widget.axis == Axis.horizontal)
-            ? NavigatorController()
-            : NavigatorController.expand());
+    navigatorController = widget.navigatorController ?? NavigatorController();
     scrollController = widget.scrollController ?? ScrollController();
     _generateWidgetList();
     super.initState();
@@ -132,38 +129,15 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
     }
     navigatorController
         .updateActiveItem(keys.elementAt(widget.defaultActiveItem));
-
-    if (widget.axis == Axis.vertical) {
-      itemWidgets.add(
-        InkWell(
-          onTap: navigatorController.toggleExpanded,
-          child: const Icon(
-            Icons.keyboard_arrow_right_rounded,
-            color: Colors.white,
-          ),
-        )
-      );
-    }
-
-    double scrollDistance = 0;
+    double x = 0;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      double maxHeight = 0;
       for (int i = 0; i < widget.defaultActiveItem; i++) {
-        (widget.axis == Axis.horizontal)
-            ? scrollDistance += (keys.elementAt(i)).currentContext!.size!.width
-            : scrollDistance +=
-                (keys.elementAt(i)).currentContext!.size!.height;
-        if (widget.axis == Axis.vertical) {
-          var x = (keys.elementAt(i).currentContext!.size!.height);
-          maxHeight = (x > maxHeight) ? x : maxHeight;
-          // todo: use this to adjust widget size in vertical navigation
-        }
-        // todo: fix [ScrollController] issue
-      // if (x > MediaQuery.of(context).size.width) {
-      //   scrollController.animateTo(x,
-      //     duration: Duration(milliseconds: widget.defaultActiveItem * 100),
-      //     curve: Curves.linear);
-      // }
+        x += (keys.elementAt(i)).currentContext!.size!.width;
+      }
+      if (x > MediaQuery.of(context).size.width) {
+        scrollController.animateTo(x,
+          duration: Duration(milliseconds: widget.defaultActiveItem * 100),
+          curve: Curves.linear);
       }
     });
   }
@@ -189,16 +163,11 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
           widget.borderRadius ?? const BorderRadius.all(Radius.circular(10)),
       padding: widget.itemPadding ??
           const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      margin: widget.itemMargin ??
-          ((widget.axis == Axis.horizontal)
-              ? const EdgeInsets.symmetric(horizontal: 8)
-              : const EdgeInsets.symmetric(vertical: 8)),
+      margin: widget.itemMargin ?? const EdgeInsets.symmetric(horizontal: 8),
       elevation: widget.itemElevation ?? 0,
       iconData: (widget.icons == null) ? null : widget.icons![index],
     );
-    if (widget.icons != null &&
-        widget.icons![index] == null &&
-        widget.axis == Axis.horizontal) {
+    if (widget.icons != null && widget.icons![index] == null) {
       item = FittedBox(
         fit: BoxFit.contain,
         child: item,
@@ -220,14 +189,14 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
         widthFactor: 1,
         child: SingleChildScrollView(
           scrollDirection: widget.axis,
-          controller: scrollController,
+          controller: widget.scrollController,
           child: Padding(
               padding: widget.padding,
               child: getFlex(
                   child: Flex(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 direction: widget.axis,
-                children: itemWidgets
+                children: itemWidgets,
               ))),
         ),
       ),
@@ -252,7 +221,7 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
   Widget getFlex({required Flex child}) {
     return (widget.axis == Axis.horizontal)
         ? IntrinsicHeight(child: child)
-        : IntrinsicWidth(child: child);
+        : child;
   }
 
   @override

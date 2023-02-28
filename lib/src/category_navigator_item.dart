@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:category_navigator/src/navigator_controller.dart';
-import 'package:flutter/scheduler.dart';
 
 class NavigatorItem extends StatefulWidget {
-  /// [label] and [iconData] both cannot be null
   const NavigatorItem({
     super.key,
     this.label,
@@ -19,6 +17,8 @@ class NavigatorItem extends StatefulWidget {
     this.margin = const EdgeInsets.symmetric(horizontal: 8),
     this.elevation = 0,
   });
+
+  /// [label] and [iconData] both cannot be null
 
   final String? label;
   final IconData? iconData;
@@ -51,12 +51,39 @@ class _NavigatorItemState extends State<NavigatorItem>
   void initState() {
     super.initState();
     assert(widget.key is GlobalObjectKey);
-    widget.controller.addListener(_toggleState);
+    widget.controller.addListener(toggleState);
+  }
+
+  /// updates the state of the item
+  toggleState() {
+    setState(() {
+      if (widget.controller.isItemActive(widget.key!)) {
+        backgroundColor = widget.highlightBackgroundColor;
+        shadow = widget.shadow;
+        elevation = widget.elevation;
+        textStyle = widget.highlightTextStyle;
+        textColor = widget.highlightTextStyle.color!;
+        child = Text(
+          widget.label ?? '',
+          style: textStyle,
+        );
+      } else {
+        backgroundColor = widget.unselectedBackgroundColor;
+        shadow = [const BoxShadow(color: Colors.transparent)];
+        elevation = 0;
+        textStyle = widget.unselectedTextStyle;
+        textColor = widget.unselectedTextStyle.color!;
+        child = const SizedBox(
+          height: 0,
+          width: 0,
+        );
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    _toggleState();
+    toggleState();
     return InkWell(
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
@@ -102,48 +129,9 @@ class _NavigatorItemState extends State<NavigatorItem>
             ])
           : Icon(widget.iconData, color: textColor, size: 20);
 
-  /// updates the state of the item
-  _toggleState() {
-    setState(() {
-      widget.controller.isItemActive(widget.key!)
-          ? _highlightWidget()
-          : _unhighlightWidget();
-
-      (widget.controller.isItemExpanded(widget.key!))
-          ? _expandWidget()
-          : _collapseWidget();
-    });
-  }
-
-  _highlightWidget() {
-    backgroundColor = widget.highlightBackgroundColor;
-    shadow = widget.shadow;
-    elevation = widget.elevation;
-    textStyle = widget.highlightTextStyle;
-    textColor = widget.highlightTextStyle.color!;
-  }
-
-  _unhighlightWidget() {
-    backgroundColor = widget.unselectedBackgroundColor;
-    shadow = [const BoxShadow(color: Colors.transparent)];
-    elevation = 0;
-    textStyle = widget.unselectedTextStyle;
-    textColor = widget.unselectedTextStyle.color!;
-  }
-
-  _expandWidget() => child = Text(
-        widget.label ?? '',
-        style: textStyle,
-      );
-
-  _collapseWidget() => child = const SizedBox(
-        height: 0,
-        width: 0,
-      );
-
   @override
   void dispose() {
-    widget.controller.removeListener(_toggleState);
+    widget.controller.removeListener(toggleState);
     super.dispose();
   }
 }

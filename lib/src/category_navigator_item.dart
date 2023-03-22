@@ -17,11 +17,12 @@ class NavigatorItem extends StatefulWidget {
     this.borderRadius = const BorderRadius.all(Radius.circular(10)),
     this.padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
     this.margin = const EdgeInsets.symmetric(horizontal: 8),
-    this.elevation = 0,
-  });
+    this.elevation = 0, required this.iconSize,
+  }) : assert (key != null);
 
   final String? label;
   final IconData? iconData;
+  final double iconSize;
   final NavigatorController controller;
   final Color highlightBackgroundColor;
   final Color unselectedBackgroundColor;
@@ -61,7 +62,7 @@ class _NavigatorItemState extends State<NavigatorItem>
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
         onTap: () =>
-            widget.controller.updateActiveItem(widget.key as GlobalObjectKey),
+            widget.controller.updateActiveItem(widget.key!),
         child: Padding(
             padding: widget.margin,
             child: Material(
@@ -91,7 +92,7 @@ class _NavigatorItemState extends State<NavigatorItem>
               Icon(
                 widget.iconData,
                 color: textColor,
-                size: 20
+                size: widget.iconSize
               ),
               const SizedBox(width: 5),
               AnimatedSize(

@@ -18,16 +18,19 @@ class NavigatorController extends ChangeNotifier {
 
   /// This method is used to update the active item in the navigation menu and
   /// executes the registered callbacks to update states of items widgets.
-  updateActiveItem(GlobalObjectKey key) {
+  updateActiveItem(Key key) {
     ChangeNotifier.debugAssertNotDisposed(this);
-    activeItemIndex = key.value as int;
+    String keyValue = (key as GlobalObjectKey).value as String;
+    activeItemIndex = int.parse(keyValue.substring(keyValue.length - 1)[0]);
     notifyListeners();
   }
 
   /// This method is used by widgets to check current state of the item widget
   /// and it should update current state or not.
-  bool isItemActive(Key key) =>
-      activeItemIndex == (key as GlobalObjectKey).value as int;
+  bool isItemActive(Key key) {
+    String keyValue = (key as GlobalObjectKey).value as String;
+    return activeItemIndex == int.parse(keyValue.substring(keyValue.length - 1)[0]);
+  }
 
   toggleExpanded() {
     assert(_expanded != null);

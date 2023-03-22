@@ -7,6 +7,7 @@ class CategoryNavigator extends StatefulWidget {
     super.key,
     this.labels,
     this.icons,
+    this.iconSize,
     this.navigatorController,
     this.scrollController,
     this.expand = true,
@@ -68,6 +69,7 @@ class CategoryNavigator extends StatefulWidget {
 
   /// Additional parameters for customization of the [NavigatorItem].
 
+  final double? iconSize;
   final Color? highlightBackgroundColor;
   final Color? unselectedBackgroundColor;
   final TextStyle? highlightTextStyle;
@@ -126,7 +128,7 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
   /// [ScrollController.animateTo] method.
   _generateWidgetList() {
     for (int index = 0; index < length; index++) {
-      GlobalObjectKey key = GlobalObjectKey(index);
+      GlobalObjectKey key = GlobalObjectKey('navigator_item$index');
       keys.add(key);
       itemWidgets.add(_generateNavigationItem(index));
     }
@@ -137,9 +139,9 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
       itemWidgets.add(
         InkWell(
           onTap: navigatorController.toggleExpanded,
-          child: const Icon(
+          child: Icon(
             Icons.keyboard_arrow_right_rounded,
-            color: Colors.white,
+            color: widget.unselectedTextStyle!.color,
           ),
         )
       );
@@ -195,6 +197,7 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
               : const EdgeInsets.symmetric(vertical: 8)),
       elevation: widget.itemElevation ?? 0,
       iconData: (widget.icons == null) ? null : widget.icons![index],
+      iconSize: widget.iconSize ?? 20,
     );
     if (widget.icons != null &&
         widget.icons![index] == null &&

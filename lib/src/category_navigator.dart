@@ -131,11 +131,12 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
       keys.add(key);
       itemWidgets.add(_generateNavigationItem(index));
     }
-    navigatorController
-        .updateActiveItem(keys.elementAt(widget.defaultActiveItem));
-
     double scrollDistance = 0;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+
+      navigatorController
+          .updateActiveItem(keys.elementAt(widget.defaultActiveItem));
+
       navigatorController.addListener(
           () => widget.onChange(navigatorController.activeItemIndex));
 

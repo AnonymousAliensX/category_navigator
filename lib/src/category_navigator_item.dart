@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:category_navigator/src/navigator_controller.dart';
-import 'package:flutter/scheduler.dart';
 
 class NavigatorItem extends StatefulWidget {
   /// [label] and [iconData] both cannot be null

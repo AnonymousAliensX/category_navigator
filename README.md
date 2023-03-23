@@ -2,7 +2,7 @@
 
 [![Anonymous Aliens](https://img.shields.io/badge/By-Anonymous%20Aliens-red)](https://anonymousaliens.app/)
 [![Made with Flutter](https://img.shields.io/badge/-Flutter-blue?logo=flutter)](https://flutter.dev/)
-[![pub version](https://img.shields.io/pub/v/category_navigator?color=orange)](https://pub.dev/packages/category_navigator) 
+[![pub version](https://img.shields.io/pub/v/category_navigator?color=orange)](https://pub.dev/packages/category_navigator)
 [![pub package](https://img.shields.io/github/languages/code-size/AnonymousAliensX/category_navigator?color=success)](https://pub.dev/packages/category_navigator)
 ![latest commit](https://img.shields.io/github/last-commit/AnonymousAliensX/category_navigator?logo=github)
 
@@ -12,13 +12,12 @@ A flutter ui package for cool navigation bar with a lot of customization options
 
 ## Features
 
-- navigation bar customization like color, elevation, shape, border radius, axis, etc
-- unselected and highlighted item customization like background color, text color, shape, shadow, elevation, etc
-- animate to default active item
-- can use icons, or labels, or both
+-   navigation bar customization like color, elevation, shape, border radius, axis, etc
+-   unselected and highlighted item customization like background color, text color, shape, shadow, elevation, etc
+-   animate to default active item
+-   can use icons, or labels, or both
 
 Check out [changelog](https://github.com/AnonymousAliensX/category_navigator/blob/main/CHANGELOG.md) for updates on features and fixes.
-
 
 ## Getting started
 
@@ -30,6 +29,7 @@ dependencies:
 ```
 
 ## Usage
+
 Here's a basic example to get started with the package.
 
 ```dart
@@ -62,10 +62,10 @@ Take a look at [code examples](https://github.com/AnonymousAliensX/category_navi
 Additional parameters include all the parameters of CategoryNavigatorItem class. See [CategoryNavigatorItem parameters](#categorynavigatoritem-parameters) for more details.
 
 | S. No. | Parameter                | Description                                                                         | Value Type                                                | Default Value                                                               |
-|--------|--------------------------|-------------------------------------------------------------------------------------|-----------------------------------------------------------|-----------------------------------------------------------------------------|
+| ------ | ------------------------ | ----------------------------------------------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------- |
 | 1      | labels                   | List of strings to display in the navigation menu                                   | List\<String>                                             | optional                                                                    |
 | 2      | icons                    | List of icons to display in the navigation menu                                     | List\<IconData>                                           | optional                                                                    |
-| 3      | expand                   | Whether the navigation menu should expand in direction of axis                      | bool                                                      | true                                                                        | 
+| 3      | expand                   | Whether the navigation menu should expand in direction of axis                      | bool                                                      | true                                                                        |
 | 4      | scrollController         | An instance of the ScrollController class to handle the scrolling of navigation bar | ScrollController?                                         | optional                                                                    |
 | 5      | navigatorController      | An instance of the NavigatorController class to handle the active item              | [NavigatorController?](lib/src/navigator_controller.dart) | optional                                                                    |
 | 6      | defaultActiveItem        | Index of the default active item in the list                                        | int                                                       | 0                                                                           |
@@ -81,7 +81,7 @@ Additional parameters include all the parameters of CategoryNavigatorItem class.
 `labels` and `iconData` paramters both cannot be `null`, you have to provide atleast one of them.
 
 | S. No. | Parameter                 | Description                                                            | Value Type                                                | Default Value                                      |
-|--------|---------------------------|------------------------------------------------------------------------|-----------------------------------------------------------|----------------------------------------------------|
+| ------ | ------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------- | -------------------------------------------------- |
 | 1      | label                     | String to display in the navigation menu                               | String?                                                   | optional                                           |
 | 2      | iconData                  | Icon to display in the navigation menu                                 | IconData?                                                 | optional                                           |
 | 3      | navigatorController       | An instance of the NavigatorController class to handle the active item | [NavigatorController?](lib/src/navigator_controller.dart) | optional                                           |
@@ -96,9 +96,9 @@ Additional parameters include all the parameters of CategoryNavigatorItem class.
 | 12     | itemMargin                | Margin for the navigation items                                        | EdgeInsets                                                | EdgeInsets.symmetric(horizontal: 8)                |
 
 # TODO
-- Fix vertical navigation bar
-- working on passing complete widgets as items
 
+-   Fix vertical navigation bar
+-   working on passing complete widgets as items
 
 # Bugs or Requests
 

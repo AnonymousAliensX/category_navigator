@@ -39,6 +39,7 @@ class IconsExample extends StatelessWidget {
               icons: icons,
               navigatorController: NavigatorController(),
               scrollController: ScrollController(),
+              onChange: (activeItem) {},
             ),
           ),
         ),

@@ -29,7 +29,8 @@ class NavigatorController extends ChangeNotifier {
   /// and it should update current state or not.
   bool isItemActive(Key key) {
     String keyValue = (key as GlobalObjectKey).value as String;
-    return activeItemIndex == int.parse(keyValue.substring(keyValue.length - 1)[0]);
+    return activeItemIndex ==
+        int.parse(keyValue.substring(keyValue.length - 1)[0]);
   }
 
   toggleExpanded() {

@@ -15,7 +15,7 @@ class CategoryNavigator extends StatefulWidget {
     this.navigatorBackgroundColor = Colors.black,
     this.margin = const EdgeInsets.symmetric(horizontal: 16),
     this.padding = const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0),
-    this.axis = Axis.horizontal,
+    // this.axis = Axis.horizontal,
     this.shape = const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(12))),
     this.navigatorElevation = 5,
@@ -28,6 +28,7 @@ class CategoryNavigator extends StatefulWidget {
     this.itemMargin,
     this.highlightTextStyle,
     this.unselectedTextStyle,
+    required this.onChange,
   })  : assert(icons != null || labels != null),
         assert((icons != null && labels != null)
             ? (icons.length == labels.length)
@@ -58,7 +59,7 @@ class CategoryNavigator extends StatefulWidget {
   final EdgeInsets padding;
 
   /// The orientation/direction of the navigation menu
-  final Axis axis;
+  final Axis axis = Axis.horizontal;
 
   /// The [ShapeBorder] property that can be used to customize background shape
   /// of the navigation menu
@@ -67,8 +68,9 @@ class CategoryNavigator extends StatefulWidget {
   /// The elevation of the navigation menu
   final double navigatorElevation;
 
-  /// Additional parameters for customization of the [NavigatorItem].
+  final void Function(int) onChange;
 
+  /// Additional parameters for customization of the [NavigatorItem].
   final double? iconSize;
   final Color? highlightBackgroundColor;
   final Color? unselectedBackgroundColor;
@@ -104,10 +106,7 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
     } else {
       length = widget.icons!.length;
     }
-    navigatorController = widget.navigatorController ??
-        ((widget.axis == Axis.horizontal)
-            ? NavigatorController()
-            : NavigatorController.expand());
+    navigatorController = widget.navigatorController ?? NavigatorController();
     scrollController = widget.scrollController ?? ScrollController();
     _generateWidgetList();
     super.initState();
@@ -135,37 +134,20 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
     navigatorController
         .updateActiveItem(keys.elementAt(widget.defaultActiveItem));
 
-    if (widget.axis == Axis.vertical) {
-      itemWidgets.add(
-        InkWell(
-          onTap: navigatorController.toggleExpanded,
-          child: Icon(
-            Icons.keyboard_arrow_right_rounded,
-            color: widget.unselectedTextStyle!.color,
-          ),
-        )
-      );
-    }
-
     double scrollDistance = 0;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      double maxHeight = 0;
-      for (int i = 0; i < widget.defaultActiveItem; i++) {
-        (widget.axis == Axis.horizontal)
-            ? scrollDistance += (keys.elementAt(i)).currentContext!.size!.width
-            : scrollDistance +=
-                (keys.elementAt(i)).currentContext!.size!.height;
-        if (widget.axis == Axis.vertical) {
-          var x = (keys.elementAt(i).currentContext!.size!.height);
-          maxHeight = (x > maxHeight) ? x : maxHeight;
-          // todo: use this to adjust widget size in vertical navigation
+      navigatorController.addListener(
+          () => widget.onChange(navigatorController.activeItemIndex));
+
+      if (widget.defaultActiveItem != 0) {
+        for (int i = 0; i < widget.defaultActiveItem; i++) {
+          scrollDistance += (keys.elementAt(i)).currentContext!.size!.width;
         }
-        // todo: fix [ScrollController] issue
-      // if (x > MediaQuery.of(context).size.width) {
-      //   scrollController.animateTo(x,
-      //     duration: Duration(milliseconds: widget.defaultActiveItem * 100),
-      //     curve: Curves.linear);
-      // }
+        if (scrollDistance > MediaQuery.of(context).size.width) {
+          scrollController.animateTo(scrollDistance,
+              duration: Duration(milliseconds: widget.defaultActiveItem * 100),
+              curve: Curves.linear);
+        }
       }
     });
   }
@@ -226,16 +208,15 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
           controller: scrollController,
           child: Padding(
               padding: widget.padding,
-              child: getFlex(
+              child: _getFlex(
                   child: Flex(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                direction: widget.axis,
-                children: itemWidgets
-              ))),
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      direction: widget.axis,
+                      children: itemWidgets))),
         ),
       ),
     );
-    return (widget.expand) ? fillMainAxis(child: nav) : nav;
+    return (widget.expand) ? _fillMainAxis(child: nav) : nav;
   }
 
   ///Expands the navigation menu to fill complete space
@@ -244,7 +225,7 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
   /// [double.infinity] to ensure the menu takes up whole space in given [axis]
   /// direction. If [CategoryNavigator.expand] is true, this method is called
   /// otherwise the navigation menu only takes up just enough space for the items.
-  SizedBox fillMainAxis({required Card child}) {
+  SizedBox _fillMainAxis({required Card child}) {
     return (widget.axis == Axis.horizontal)
         ? SizedBox(width: double.infinity, child: child)
         : SizedBox(height: double.infinity, child: child);
@@ -252,7 +233,7 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
 
   /// This method wraps the [Flex] in an [IntrinsicHeight] widget if the [axis]
   /// is [Axis.horizontal] to ensure no height differences in children of the menu.
-  Widget getFlex({required Flex child}) {
+  Widget _getFlex({required Flex child}) {
     return (widget.axis == Axis.horizontal)
         ? IntrinsicHeight(child: child)
         : IntrinsicWidth(child: child);

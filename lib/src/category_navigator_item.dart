@@ -17,8 +17,9 @@ class NavigatorItem extends StatefulWidget {
     this.borderRadius = const BorderRadius.all(Radius.circular(10)),
     this.padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
     this.margin = const EdgeInsets.symmetric(horizontal: 8),
-    this.elevation = 0, required this.iconSize,
-  }) : assert (key != null);
+    this.elevation = 0,
+    required this.iconSize,
+  }) : assert(key != null);
 
   final String? label;
   final IconData? iconData;
@@ -61,8 +62,7 @@ class _NavigatorItemState extends State<NavigatorItem>
     return InkWell(
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
-        onTap: () =>
-            widget.controller.updateActiveItem(widget.key!),
+        onTap: () => widget.controller.updateActiveItem(widget.key!),
         child: Padding(
             padding: widget.margin,
             child: Material(
@@ -89,11 +89,7 @@ class _NavigatorItemState extends State<NavigatorItem>
         )
       : (widget.label != null)
           ? Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(
-                widget.iconData,
-                color: textColor,
-                size: widget.iconSize
-              ),
+              Icon(widget.iconData, color: textColor, size: widget.iconSize),
               const SizedBox(width: 5),
               AnimatedSize(
                 duration: const Duration(milliseconds: 200),

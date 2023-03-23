@@ -26,6 +26,7 @@ class LabelOnlyExample extends StatelessWidget {
                   labels: itemsList,
                   navigatorController: NavigatorController(),
                   scrollController: ScrollController(),
+                  onChange: (activeItem) {},
                 ))));
   }
 }

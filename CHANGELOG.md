@@ -39,3 +39,7 @@
 * added iconSize attribute
 * added onChange callback functionality, now there's no need to manually listen to
   NavigatorController for updates
+
+## 1.1.6 - 23/03/2023
+
+* update active item after build

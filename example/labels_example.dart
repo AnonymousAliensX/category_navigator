@@ -18,15 +18,12 @@ class LabelOnlyExample extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SafeArea(
-            child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CategoryNavigator(
-                  labels: itemsList,
-                  navigatorController: NavigatorController(),
-                  scrollController: ScrollController(),
-                  onChange: (activeItem) {},
-                ))));
+    return CategoryNavigator(
+      labels: itemsList,
+      navigatorController: NavigatorController(),
+      scrollController: ScrollController(),
+      onChange: (activeItem) {},
+      builder: (context, index, selected) => Container(),
+    );
   }
 }

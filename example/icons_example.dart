@@ -1,9 +1,14 @@
 import 'package:category_navigator/category_navigator.dart';
 import 'package:flutter/material.dart';
 
-class IconsExample extends StatelessWidget {
+class IconsExample extends StatefulWidget {
   const IconsExample({Key? key}) : super(key: key);
 
+  @override
+  State<IconsExample> createState() => _IconsExampleState();
+}
+
+class _IconsExampleState extends State<IconsExample> {
   final List<String> itemsList = const [
     'All',
     'Android',
@@ -27,23 +32,19 @@ class IconsExample extends StatelessWidget {
     Icons.laptop_windows_sharp
   ];
 
+  int selected = 0;
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SafeArea(
-            child: CategoryNavigator(
-              labels: itemsList,
-              icons: icons,
-              navigatorController: NavigatorController(),
-              scrollController: ScrollController(),
-              onChange: (activeItem) {},
-            ),
-          ),
-        ),
+    return CategoryNavigator(
+      labels: itemsList,
+      builder: (context, index, selected) => Icon(
+        icons[index],
+        color: (selected == index) ? Colors.black : Colors.white,
       ),
+      navigatorController: NavigatorController(),
+      scrollController: ScrollController(),
+      onChange: (activeItem) => setState(() => selected = activeItem),
     );
   }
 }

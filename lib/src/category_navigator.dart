@@ -6,8 +6,8 @@ class CategoryNavigator extends StatefulWidget {
   const CategoryNavigator({
     super.key,
     this.labels,
-    this.icons,
-    this.iconSize,
+    required this.onChange,
+    required this.builder,
     this.navigatorController,
     this.scrollController,
     this.expand = true,
@@ -19,20 +19,16 @@ class CategoryNavigator extends StatefulWidget {
     this.shape = const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(12))),
     this.navigatorElevation = 5,
-    this.highlightBackgroundColor,
-    this.unselectedBackgroundColor,
-    this.shadow,
-    this.borderRadius,
-    this.itemElevation,
-    this.itemPadding,
-    this.itemMargin,
-    this.highlightTextStyle,
-    this.unselectedTextStyle,
-    required this.onChange,
-  })  : assert(icons != null || labels != null),
-        assert((icons != null && labels != null)
-            ? (icons.length == labels.length)
-            : true);
+    this.highlightBackgroundColor = Colors.white,
+    this.unselectedBackgroundColor = Colors.black,
+    this.shadow = const [BoxShadow(color: Colors.black)],
+    this.borderRadius = const BorderRadius.all(Radius.circular(10)),
+    this.itemElevation = 0,
+    this.itemPadding = const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+    this.itemMargin = const EdgeInsets.symmetric(horizontal: 8),
+    this.highlightTextStyle = const TextStyle(color: Colors.black),
+    this.unselectedTextStyle = const TextStyle(color: Colors.white),
+  });
 
   /// This bool variable tells the navigation bar whether to take the full space
   /// available in the [axis] of the menu i.e. if the [axis] parameter is
@@ -42,9 +38,6 @@ class CategoryNavigator extends StatefulWidget {
 
   /// The labels used for navigation items, can be null
   final List<String>? labels;
-
-  /// The icons used for navigation items, can be null
-  final List<dynamic>? icons;
 
   /// The item that will be set active at first, defaults to 0
   final int defaultActiveItem;
@@ -69,18 +62,18 @@ class CategoryNavigator extends StatefulWidget {
   final double navigatorElevation;
 
   final void Function(int) onChange;
+  final Widget? Function(BuildContext context, int index, int selected) builder;
 
   /// Additional parameters for customization of the [NavigatorItem].
-  final double? iconSize;
-  final Color? highlightBackgroundColor;
-  final Color? unselectedBackgroundColor;
-  final TextStyle? highlightTextStyle;
-  final TextStyle? unselectedTextStyle;
-  final List<BoxShadow>? shadow;
-  final double? itemElevation;
-  final BorderRadius? borderRadius;
-  final EdgeInsets? itemPadding;
-  final EdgeInsets? itemMargin;
+  final Color highlightBackgroundColor;
+  final Color unselectedBackgroundColor;
+  final TextStyle highlightTextStyle;
+  final TextStyle unselectedTextStyle;
+  final List<BoxShadow> shadow;
+  final double itemElevation;
+  final BorderRadius borderRadius;
+  final EdgeInsets itemPadding;
+  final EdgeInsets itemMargin;
 
   /// The controller object to handle active items
   final NavigatorController? navigatorController;
@@ -96,6 +89,7 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
   List<Widget> itemWidgets = [];
   List<GlobalObjectKey> keys = [];
   int length = 0;
+  int selected = 0;
   late ScrollController scrollController;
   late NavigatorController navigatorController;
 
@@ -103,122 +97,138 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
   void initState() {
     if (widget.labels != null) {
       length = widget.labels!.length;
-    } else {
-      length = widget.icons!.length;
     }
+    selected = widget.defaultActiveItem;
     navigatorController = widget.navigatorController ?? NavigatorController();
     scrollController = widget.scrollController ?? ScrollController();
-    _generateWidgetList();
+    _generateKeys();
     super.initState();
   }
 
-  /// Generates all items for navigation menu
+  _generateKeys() {
+    keys = List.generate(
+        length, (index) => GlobalObjectKey('navigator_item$index'));
+  }
+
+  /// This method is used to scroll to item if it is outside the viewport
   ///
-  /// This method adds all the navigation items in the [itemWidgets] list
-  /// generated using [_generateNavigationItem] method and after the creation
-  /// of all the widgets, it updates the [NavigatorController] for [CategoryNavigator.defaultActiveItem].
-  /// Even though the item is being set as active, it will be not be visible to
-  /// the user if [CategoryNavigator.defaultActiveItem] is set to a larger index. For that, [WidgetsBinding.addPostFrameCallback]
-  /// is used to register a callback which is called during the frame, so the widgets
-  /// are built at this point and we can retrieve widget size using the [GlobalObjectKey]
+  /// This method registers a callback which is called during the frame, so the widgets
+  /// are already built at this point and we can retrieve widget size using the [GlobalObjectKey]
   /// and accessing [BuildContext.size] property to calculate the distance the items
   /// list has to scroll to get to the active item. Later, it uses the [CategoryNavigator.scrollController]
   /// and scrolls the list to the item at [CategoryNavigator.defaultActiveItem] using
   /// [ScrollController.animateTo] method.
-  _generateWidgetList() {
-    for (int index = 0; index < length; index++) {
-      GlobalObjectKey key = GlobalObjectKey('navigator_item$index');
-      keys.add(key);
-      itemWidgets.add(_generateNavigationItem(index));
-    }
-    double scrollDistance = 0;
+  _scrollWidgetList() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-
       navigatorController
           .updateActiveItem(keys.elementAt(widget.defaultActiveItem));
 
-      navigatorController.addListener(
-          () => widget.onChange(navigatorController.activeItemIndex));
-
-      if (widget.defaultActiveItem != 0) {
-        for (int i = 0; i < widget.defaultActiveItem; i++) {
-          scrollDistance += (keys.elementAt(i)).currentContext!.size!.width;
-        }
-        if (scrollDistance > MediaQuery.of(context).size.width) {
-          scrollController.animateTo(scrollDistance,
-              duration: Duration(milliseconds: widget.defaultActiveItem * 100),
-              curve: Curves.linear);
-        }
-      }
+      navigatorController.addListener(() {
+        setState(() => selected = widget.defaultActiveItem);
+        widget.onChange(navigatorController.activeItemIndex);
+      });
     });
-  }
-
-  /// Generate navigation item for the data
-  ///
-  /// This method generates a [NavigatorItem] widget for each label or icon and
-  /// wraps it around a FittedBox if icon is null when using both labels and icons.
-  _generateNavigationItem(int index) {
-    Widget item = NavigatorItem(
-      key: keys[index],
-      label: (widget.labels == null) ? null : widget.labels![index],
-      controller: navigatorController,
-      highlightBackgroundColor: widget.highlightBackgroundColor ?? Colors.white,
-      unselectedBackgroundColor:
-          widget.unselectedBackgroundColor ?? Colors.black,
-      highlightTextStyle:
-          widget.highlightTextStyle ?? const TextStyle(color: Colors.black),
-      unselectedTextStyle:
-          widget.unselectedTextStyle ?? const TextStyle(color: Colors.white),
-      shadow: widget.shadow ?? const [BoxShadow(color: Colors.black)],
-      borderRadius:
-          widget.borderRadius ?? const BorderRadius.all(Radius.circular(10)),
-      padding: widget.itemPadding ??
-          const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      margin: widget.itemMargin ??
-          ((widget.axis == Axis.horizontal)
-              ? const EdgeInsets.symmetric(horizontal: 8)
-              : const EdgeInsets.symmetric(vertical: 8)),
-      elevation: widget.itemElevation ?? 0,
-      iconData: (widget.icons == null) ? null : widget.icons![index],
-      iconSize: widget.iconSize ?? 20,
-    );
-    if (widget.icons != null &&
-        widget.icons![index] == null &&
-        widget.axis == Axis.horizontal) {
-      item = FittedBox(
-        fit: BoxFit.contain,
-        child: item,
-      );
-    }
-    return item;
   }
 
   @override
   Widget build(BuildContext context) {
     Card nav = Card(
-      shape: widget.shape,
-      color: widget.navigatorBackgroundColor,
-      margin: widget.margin,
-      elevation: widget.navigatorElevation,
-      clipBehavior: Clip.hardEdge,
-      child: Center(
-        heightFactor: 1,
-        widthFactor: 1,
-        child: SingleChildScrollView(
-          scrollDirection: widget.axis,
-          controller: scrollController,
-          child: Padding(
-              padding: widget.padding,
-              child: _getFlex(
-                  child: Flex(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      direction: widget.axis,
-                      children: itemWidgets))),
-        ),
-      ),
-    );
+        shape: widget.shape,
+        color: widget.navigatorBackgroundColor,
+        margin: widget.margin,
+        elevation: widget.navigatorElevation,
+        clipBehavior: Clip.hardEdge,
+        child: Center(
+          heightFactor: 1,
+          widthFactor: 1,
+          child: SingleChildScrollView(
+              scrollDirection: widget.axis,
+              controller: scrollController,
+              child: Padding(
+                  padding: widget.padding,
+                  child: _getFlex(
+                      child: Flex(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          direction: widget.axis,
+                          children: List.generate(
+                              length,
+                              (index) => InkWell(
+                                  key: keys[index],
+                                  highlightColor: Colors.transparent,
+                                  splashColor: Colors.transparent,
+                                  onTap: () {
+                                    navigatorController
+                                        .updateActiveItem(keys[index]);
+                                    setState(() {
+                                      selected =
+                                          navigatorController.activeItemIndex;
+                                    });
+                                  },
+                                  child: Padding(
+                                      padding: widget.itemMargin,
+                                      child: Material(
+                                          elevation: (selected == index)
+                                              ? widget.itemElevation
+                                              : 0,
+                                          borderRadius: widget.borderRadius,
+                                          color: (selected == index)
+                                              ? widget.highlightBackgroundColor
+                                              : widget
+                                                  .unselectedBackgroundColor,
+                                          child: AnimatedContainer(
+                                              padding: widget.itemPadding,
+                                              curve: Curves.decelerate,
+                                              duration: const Duration(
+                                                  milliseconds: 200),
+                                              decoration: BoxDecoration(
+                                                  color: (selected == index)
+                                                      ? widget
+                                                          .highlightBackgroundColor
+                                                      : widget
+                                                          .unselectedBackgroundColor,
+                                                  shape: BoxShape.rectangle,
+                                                  borderRadius:
+                                                      widget.borderRadius,
+                                                  boxShadow: (selected == index)
+                                                      ? widget.shadow
+                                                      : [
+                                                          const BoxShadow(
+                                                              color: Colors
+                                                                  .transparent)
+                                                        ]),
+                                              child: _buildItem(
+                                                  selected == index,
+                                                  index)))))))))),
+        ));
     return (widget.expand) ? _fillMainAxis(child: nav) : nav;
   }
+
+  _buildItem(bool selected, int index) => (widget.labels != null)
+      ? Row(mainAxisSize: MainAxisSize.min, children: [
+          // Icon(widget.icons![index],
+          //     color: selected
+          //         ? widget.highlightTextStyle.color
+          //         : widget.unselectedTextStyle.color,
+          //     size: widget.iconSize),
+          widget.builder(context, index, this.selected) ?? Container(),
+          const SizedBox(width: 5),
+          AnimatedSize(
+              duration: const Duration(milliseconds: 200),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: Text(widget.labels![index],
+                    style: selected
+                        ? widget.highlightTextStyle
+                        : widget.unselectedTextStyle),
+              ))
+        ])
+      : widget.builder(context, index, this.selected);
+
+  // : Icon(widget.icons![index],
+  //     color: selected
+  //         ? widget.highlightTextStyle.color
+  //         : widget.unselectedTextStyle.color,
+  //     size: widget.iconSize);
 
   ///Expands the navigation menu to fill complete space
   ///

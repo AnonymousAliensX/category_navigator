@@ -7,7 +7,7 @@ class CategoryNavigator extends StatefulWidget {
     super.key,
     this.labels,
     required this.onChange,
-    required this.builder,
+    this.builder,
     this.navigatorController,
     this.scrollController,
     this.expand = true,
@@ -62,7 +62,8 @@ class CategoryNavigator extends StatefulWidget {
   final double navigatorElevation;
 
   final void Function(int) onChange;
-  final Widget? Function(BuildContext context, int index, int selected) builder;
+  final Widget? Function(BuildContext context, int index, int selected)?
+      builder;
 
   /// Additional parameters for customization of the [NavigatorItem].
   final Color highlightBackgroundColor;
@@ -102,6 +103,7 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
     navigatorController = widget.navigatorController ?? NavigatorController();
     scrollController = widget.scrollController ?? ScrollController();
     _generateKeys();
+    _scrollWidgetList();
     super.initState();
   }
 
@@ -119,14 +121,14 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
   /// and scrolls the list to the item at [CategoryNavigator.defaultActiveItem] using
   /// [ScrollController.animateTo] method.
   _scrollWidgetList() {
+    navigatorController.addListener(() {
+      setState(() => selected = navigatorController.activeItemIndex);
+      widget.onChange(navigatorController.activeItemIndex);
+    });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       navigatorController
           .updateActiveItem(keys.elementAt(widget.defaultActiveItem));
 
-      navigatorController.addListener(() {
-        setState(() => selected = widget.defaultActiveItem);
-        widget.onChange(navigatorController.activeItemIndex);
-      });
     });
   }
 
@@ -159,10 +161,6 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
                                   onTap: () {
                                     navigatorController
                                         .updateActiveItem(keys[index]);
-                                    setState(() {
-                                      selected =
-                                          navigatorController.activeItemIndex;
-                                    });
                                   },
                                   child: Padding(
                                       padding: widget.itemMargin,
@@ -203,26 +201,34 @@ class _CategoryNavigatorState extends State<CategoryNavigator> {
     return (widget.expand) ? _fillMainAxis(child: nav) : nav;
   }
 
-  _buildItem(bool selected, int index) => (widget.labels != null)
-      ? Row(mainAxisSize: MainAxisSize.min, children: [
-          // Icon(widget.icons![index],
-          //     color: selected
-          //         ? widget.highlightTextStyle.color
-          //         : widget.unselectedTextStyle.color,
-          //     size: widget.iconSize),
-          widget.builder(context, index, this.selected) ?? Container(),
-          const SizedBox(width: 5),
-          AnimatedSize(
-              duration: const Duration(milliseconds: 200),
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
-                child: Text(widget.labels![index],
-                    style: selected
-                        ? widget.highlightTextStyle
-                        : widget.unselectedTextStyle),
-              ))
-        ])
-      : widget.builder(context, index, this.selected);
+  _buildItem(bool selected, int index) {
+    Widget? child;
+    if (widget.builder != null) {
+      child = widget.builder!(context, index, this.selected);
+    }
+    return (widget.builder == null || child == null)
+        ? Text(widget.labels![index],
+            style: selected
+                ? widget.highlightTextStyle
+                : widget.unselectedTextStyle)
+        : (widget.labels != null)
+            ? Row(mainAxisSize: MainAxisSize.min, children: [
+                child ?? Container(),
+                const SizedBox(width: 5),
+                AnimatedSize(
+                    duration: const Duration(milliseconds: 200),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      child: (selected)
+                          ? Text(widget.labels![index],
+                              style: selected
+                                  ? widget.highlightTextStyle
+                                  : widget.unselectedTextStyle)
+                          : const SizedBox(height: 0, width: 0),
+                    ))
+              ])
+            : child;
+  }
 
   // : Icon(widget.icons![index],
   //     color: selected
